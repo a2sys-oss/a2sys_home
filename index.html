@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>a2sys — Bridging Agentic AI to System Reality</title>
+  <meta name="description" content="Beyond the limits of LLM and GPU-centric serving — unifying model optimization, serving SW/systems, and next-gen memory into one." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ─── Tokens ─── */
+    :root {
+      --blue:      #0052FF;
+      --blue-l:    #3375FF;
+      --blue-dim:  rgba(0, 82, 255, 0.12);
+      --blue-ring: rgba(0, 82, 255, 0.32);
+      --bg:        #131620;
+      --surface:   rgba(255, 255, 255, 0.07);
+      --border:    rgba(255, 255, 255, 0.11);
+      --text:      #ECEEF4;
+      --muted:     #A0AABF;
+      --dim:       #2B3040;
+      --r:         14px;
+      --w:         1120px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 3px; }
+
+    .wrap {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* ─── Progress ─── */
+    #progress {
+      position: fixed; top: 0; left: 0;
+      height: 2px; width: 0;
+      background: var(--blue);
+      z-index: 999;
+      transition: width 0.08s linear;
+      pointer-events: none;
+    }
+
+    /* ─── Nav ─── */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    #nav.scrolled {
+      background: rgba(6, 6, 14, 0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: var(--w);
+      margin: 0 auto;
+      padding: 0 28px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-btn {
+      background: var(--blue);
+      color: #fff !important;
+      padding: 9px 22px;
+      border-radius: 7px;
+      font-weight: 600 !important;
+      transition: background 0.2s, transform 0.15s !important;
+    }
+    .nav-btn:hover { background: var(--blue-l) !important; transform: translateY(-1px); }
+    .hamburger {
+      display: none;
+      background: none; border: none;
+      cursor: pointer; color: var(--text); padding: 4px;
+    }
+    #mob-menu {
+      display: none;
+      flex-direction: column;
+      padding: 12px 28px 22px;
+      gap: 0;
+      border-top: 1px solid var(--border);
+      background: rgba(6, 6, 14, 0.96);
+    }
+    #mob-menu.open { display: flex; }
+    #mob-menu a {
+      padding: 12px 0;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+    #mob-menu a:hover { color: var(--text); }
+    #mob-menu a:last-child { border-bottom: none; color: var(--blue); font-weight: 600; }
+
+    /* ─── Buttons ─── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 30px;
+      border-radius: 8px;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      transition: transform 0.15s, box-shadow 0.2s, background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-solid {
+      background: var(--blue); color: #fff;
+    }
+    .btn-solid:hover { background: var(--blue-l); box-shadow: 0 8px 32px rgba(0,82,255,0.28); }
+    .btn-ghost {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--blue-ring); color: var(--blue); }
+
+    /* ─── Eyebrow + headings ─── */
+    .eye {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--blue);
+      font-family: 'Courier New', monospace;
+    }
+    .h2 {
+      font-size: clamp(1.9rem, 3.5vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.45;
+      margin-top: 12px;
+    }
+
+    /* ─── Cards ─── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    }
+    .card:hover {
+      border-color: var(--blue-ring);
+      transform: translateY(-3px);
+      box-shadow: 0 20px 52px rgba(0, 82, 255, 0.12);
+    }
+
+    /* ─── Scroll reveal ─── */
+    .fade {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade.in { opacity: 1; transform: none; }
+    .d1 { transition-delay: 0.1s; }
+    .d2 { transition-delay: 0.2s; }
+    .d3 { transition-delay: 0.3s; }
+    .d4 { transition-delay: 0.4s; }
+
+    hr.rule {
+      max-width: var(--w);
+      margin: 0 auto;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ═══ HERO ═══ */
+    #hero {
+      position: relative;
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding: 120px 0 90px;
+    }
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(0,82,255,0.038) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,82,255,0.038) 1px, transparent 1px);
+      background-size: 80px 80px;
+      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 30%, transparent 100%);
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 30%, transparent 100%);
+    }
+    .hero-glow {
+      position: absolute; pointer-events: none;
+      top: 32%; left: 50%; transform: translate(-50%, -50%);
+      width: 900px; height: 640px; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(0,82,255,0.09), transparent 68%);
+    }
+    .hero-content { position: relative; z-index: 1; text-align: center; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 9px;
+      border: 1px solid rgba(0,82,255,0.3);
+      background: rgba(0,82,255,0.08);
+      border-radius: 100px;
+      padding: 7px 18px;
+      margin-bottom: 32px;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--blue); border-radius: 50%;
+      animation: blink 2.4s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.35; transform: scale(0.65); }
+    }
+    .badge-text {
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--blue); font-family: 'Courier New', monospace;
+    }
+    .hero-h1 {
+      font-size: clamp(1.9rem, 3.5vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.45;
+      margin-bottom: 20px;
+    }
+    .hero-h1 .accent { color: var(--blue); }
+    .hero-sub {
+      font-size: clamp(1rem, 1.5vw, 1.1rem);
+      color: var(--muted);
+      line-height: 1.9;
+      max-width: 620px;
+      margin: 0 auto 42px;
+    }
+    .hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .scroll-line {
+      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+      width: 1px; height: 52px;
+      background: linear-gradient(to bottom, transparent, var(--blue), transparent);
+      opacity: 0.2;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:0.15} 50%{opacity:0.35} }
+
+    /* ═══ TEAM ═══ */
+    #team { padding: 120px 0; }
+    .team-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 52px;
+    }
+    .team-card {
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .tc-photo {
+      width: 96px;
+      aspect-ratio: 242 / 344;
+      flex-shrink: 0;
+      border-radius: 14px;
+      object-fit: cover;
+      object-position: center top;
+      background-color: transparent;
+    }
+    .tc-avatar {
+      width: 120px; height: 120px; flex-shrink: 0;
+      border-radius: 14px;
+      background: var(--blue-dim);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; font-weight: 800; color: var(--blue);
+    }
+    .tc-body { flex: 1; min-width: 0; }
+    .tc-head {
+      display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+    }
+    .tc-role {
+      font-size: 1.0625rem; font-weight: 700;
+      color: var(--blue); flex-shrink: 0;
+    }
+    .tc-name { font-size: 1.0625rem; font-weight: 500; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+    .tc-name-divider { color: var(--dim); font-weight: 300; }
+    .tc-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+    .tc-list li {
+      display: flex; align-items: baseline; gap: 8px;
+      font-size: 0.8125rem; line-height: 1.5;
+    }
+    .tc-list li::before {
+      content: ''; display: block; flex-shrink: 0;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--border); margin-top: 5px;
+    }
+    .tc-list li.current::before { background: var(--blue); }
+    .tc-list li .co { font-weight: 600; color: var(--muted); }
+    .tc-list li .sep { color: var(--dim); }
+    .tc-list li .ttl { color: var(--muted); opacity: 0.7; }
+    .tc-divider {
+      border: none; border-top: 1px solid var(--border);
+      margin: 10px 0;
+    }
+
+    /* ═══ CAREERS ═══ */
+    #careers { padding: 120px 0; }
+    .careers-intro-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 24px;
+      max-width: 600px;
+    }
+    .careers-intro {
+      font-size: 0.9375rem; color: var(--muted); line-height: 1.85;
+    }
+    .expertise-wrap {
+      margin-top: 48px;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+    }
+    .expertise-table { width: 100%; border-collapse: collapse; }
+    .expertise-table thead tr {
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+    }
+    .expertise-table th {
+      text-align: left;
+      font-size: 1rem; font-weight: 600;
+      color: var(--muted);
+      padding: 16px 24px;
+    }
+    .expertise-table td {
+      padding: 20px 24px;
+      vertical-align: middle;
+      border-bottom: 1px solid var(--border);
+    }
+    .expertise-table tbody tr:last-child td { border-bottom: none; }
+    .expertise-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+    .expertise-table .col-area {
+      width: 18%; white-space: nowrap;
+    }
+    .expertise-table .col-desc { width: 50%; }
+    .expertise-table .col-skills { width: 32%; }
+    .tbl-area {
+      font-size: 1rem; font-weight: 700;
+      color: var(--text); letter-spacing: -0.01em;
+    }
+    .tbl-desc {
+      font-size: 0.8125rem; color: var(--muted); line-height: 1.72;
+    }
+    .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag {
+      font-size: 0.68rem; font-weight: 600;
+      font-family: 'Courier New', monospace;
+      color: rgba(100,160,255,0.78);
+      background: rgba(0,82,255,0.08); border: 1px solid rgba(0,82,255,0.14);
+      padding: 3px 9px; border-radius: 4px;
+    }
+    .careers-cta {
+      display: flex; align-items: center; justify-content: center;
+      gap: 18px; flex-wrap: wrap; margin-top: 44px;
+    }
+    .careers-cta p { font-size: 0.875rem; color: var(--muted); }
+    .careers-cta-btns { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+    /* ═══ LOCATION ═══ */
+    #location { padding: 120px 0; }
+    .loc-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 22px; margin-top: 52px; align-items: start;
+    }
+    .loc-left { display: flex; flex-direction: column; gap: 14px; }
+    .loc-addr { padding: 28px; }
+    .loc-addr-big {
+      font-size: 1.5rem; font-weight: 800;
+      letter-spacing: -0.02em; line-height: 1.25; margin-top: 8px;
+    }
+    .loc-addr-sub { font-size: 0.875rem; color: var(--muted); margin-top: 5px; }
+    .loc-transit { padding: 20px 24px; }
+    .loc-transit p { font-size: 0.875rem; color: var(--muted); margin-top: 8px; }
+    .loc-transit strong { color: var(--text); }
+    .loc-map {
+      height: 380px; border-radius: var(--r);
+      background: var(--surface); border: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+    }
+    .loc-map svg { opacity: 0.28; }
+    .loc-map p { font-size: 0.875rem; font-weight: 500; color: var(--muted); }
+    .loc-map span { font-size: 0.75rem; color: var(--dim); }
+
+    /* ═══ CONTACT ═══ */
+    #contact { padding: 120px 0; }
+    .contact-list {
+      display: flex; flex-direction: column; gap: 20px;
+      margin-top: 48px; max-width: 560px;
+    }
+    .contact-row {
+      display: flex; align-items: baseline;
+      gap: 16px; font-size: 0.9375rem;
+    }
+    .contact-row-label { color: var(--muted); flex-shrink: 0; }
+    .contact-row-email {
+      color: var(--text); font-weight: 600;
+      transition: color 0.2s;
+    }
+    .contact-row-email:hover { color: var(--blue); }
+
+    /* ═══ FOOTER ═══ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 36px 28px;
+    }
+    .footer-inner {
+      max-width: var(--w); margin: 0 auto;
+      display: flex; align-items: flex-start;
+      justify-content: space-between;
+    }
+    .footer-right {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+    }
+    .footer-copy { font-size: 0.8125rem; color: var(--dim); }
+    .footer-biz-inline {
+      font-size: 0.75rem; color: var(--dim); line-height: 1.6; text-align: right;
+    }
+    .footer-biz-inline .fl {
+      color: var(--muted); font-weight: 500; margin-right: 5px;
+    }
+    .footer-biz-inline .sep {
+      margin: 0 10px; opacity: 0.4;
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 860px) {
+      .jobs-grid { grid-template-columns: 1fr; }
+      .loc-grid  { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .team-card { flex-direction: column; gap: 18px; }
+    }
+    @media (max-width: 480px) {
+      .team-card { padding: 20px 18px; }
+      .tc-list li {
+        display: grid;
+        grid-template-columns: 13px 1fr;
+        grid-template-rows: auto auto;
+        column-gap: 8px;
+        row-gap: 1px;
+        align-items: start;
+      }
+      .tc-list li::before { grid-row: 1; grid-column: 1; margin-top: 6px; }
+      .tc-list li .co    { grid-row: 1; grid-column: 2; }
+      .tc-list li .sep   { display: none; }
+      .tc-list li .ttl   { grid-row: 2; grid-column: 2; opacity: 0.6; }
+    }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hamburger { display: block; }
+      .contact-grid { grid-template-columns: 1fr; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- ─── NAV ─── -->
+<header id="nav">
+  <div class="nav-inner">
+    <a href="#hero" aria-label="a2sys 홈">
+      <svg viewBox="0 0 145.1 60.49" height="36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path fill="#fff" d="M122.43,21.45v2.59c0,1.12.85,2.03,1.9,2.03h12.8c.8,0,1.56.16,2.27.45,3.29,1.15,5.66,4.46,5.66,8.36v2.84c0,4.86-3.68,9.01-8.22,9.01h-30.07l3.23-7.26h25.06c1.05,0,1.9-.87,1.9-1.99v-2.59c0-1.12-.85-2.03-1.9-2.03h-12.81c-.79,0-1.56-.16-2.26-.45-2.11-.74-3.83-2.36-4.81-4.46l7.01-15.54h22.91v7.01h-20.77c-1.05,0-1.9.91-1.9,2.03Z"/>
+        <polygon fill="#fff" points="120.22 12.41 98.56 60.48 90.29 60.48 96.53 46.62 90.8 33.86 84.63 19.37 81.55 12.41 89.43 12.41 100.67 37.42 111.94 12.41 120.22 12.41"/>
+        <path fill="#fff" d="M89.14,34.89v2.83c0,4.86-3.69,9.02-8.23,9.02h-22.56v-7.27h20.78c1.05,0,1.9-.87,1.9-1.99v-2.59c0-1.12-.85-2.03-1.9-2.03h-12.81c-.79,0-1.56-.16-2.26-.45-3.29-1.15-5.66-4.46-5.66-8.36v-2.84c0-4.86,3.68-8.8,8.22-8.8h14.98l3.1,7.01h-16.3c-1.05,0-1.9.91-1.9,2.03v2.59c0,1.12.85,2.03,1.9,2.03h12.81c.79,0,1.56.16,2.26.45,3.29,1.15,5.67,4.46,5.67,8.37Z"/>
+        <path fill="#0052ff" d="M29.89,15.94c-6.66-5.89-16.8-5.92-23.61-.26-8.13,6.76-8.37,19.12-.71,26.31,6.52,6.12,16.95,6.64,23.05-.32l.07,5.02h7.19l-.03-18.1c0-4.95-2.29-9.4-5.96-12.64ZM28.64,28.86c.12,5.67-3.89,10.18-9.18,10.87-5.47.72-10.46-2.67-11.77-8.07-1-4.09.39-8.16,3.53-10.8,3.17-2.66,7.72-3.29,11.53-1.4,3.58,1.78,5.82,5.3,5.9,9.4h0Z"/>
+        <path fill="#0052ff" d="M58.38,39.47v7.27h-20.78v-7.27s.01-.12.01-.12v-6.93s-.01-2.02-.01-2.02l.17-.16,2.43-2.22.88-.8.12-.1.63-.58.53-.48c3.61-3.28,7.64-6.96,7.68-11.84.01-.96-.17-1.88-.5-2.71-.39-1-.99-1.89-1.77-2.61-1.09-1.03-2.54-1.71-4.17-1.86-1.58-.14-3.08.14-4.37.77-.16.08-.31.16-.46.25-2.85,1.67-4.8,5.09-4.8,9.04,0,.2,0,.4.02.59-.44-.57-.9-1.11-1.39-1.62-.16-.18-.33-.35-.51-.51-.7-.69-1.45-1.31-2.3-1.89-.06-.04-.11-.08-.17-.12-.72-.54-1.48-1.02-2.27-1.45-.03-.02-.07-.04-.1-.05,0,0,.01-.05.03-.14.3-1.09,2.58-8.56,10.16-11.08.04,0,.08-.03.12-.04,1.52-.45,3.07-.71,4.63-.77.21-.02.42-.02.64-.02s.45,0,.67.01c.86.03,1.68.12,2.46.26.18.03.36.06.53.1.02,0,.04.01.05.01,1.06.24,2.07.57,3.03.99.28.12.56.25.83.4.15.07.3.15.45.23.03.02.05.03.08.05,3.36,1.85,5.89,4.82,6.94,8.34.04.11.07.22.09.33.04.14.08.28.11.42.06.26.11.53.16.79.09.6.14,1.21.14,1.83,0,1.27-.2,2.5-.58,3.67-.23.95-.56,1.89-.97,2.8-.05.11-.1.22-.16.33-.9,1.91-2.39,4.01-4.23,5.84-2.26,2.25-4.6,4.35-6.96,6.55l-7.03,6.52h19.94Z"/>
+      </svg>
+    </a>
+
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#team">Co-Founders</a></li>
+        <li><a href="#careers">Build With Us</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <button class="hamburger" onclick="toggleMob()" aria-label="메뉴">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="2" y1="6"  x2="20" y2="6"/>
+        <line x1="2" y1="11" x2="20" y2="11"/>
+        <line x1="2" y1="16" x2="20" y2="16"/>
+      </svg>
+    </button>
+  </div>
+
+  <div id="mob-menu">
+    <a href="#team"     onclick="toggleMob()">Co-Founders</a>
+    <a href="#careers"  onclick="toggleMob()">Build With Us</a>
+    <a href="#contact"  onclick="toggleMob()">Contact</a>
+  </div>
+</header>
+
+
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="hero-glow"  aria-hidden="true"></div>
+
+  <div class="wrap">
+    <div class="hero-content">
+      <h1 class="hero-h1 fade d1">
+        Bridging <span class="accent">Agentic&nbsp;AI</span><br/>
+        to System Reality
+      </h1>
+      <p class="hero-sub fade d2">
+        Agent-Native Inference OS —<br/>
+        AI, SW, and HW on <span style="white-space:nowrap">Memory-centric Infrastructure.</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="scroll-line" aria-hidden="true"></div>
+</section>
+
+
+<hr class="rule"/>
+
+
+<!-- ─── TEAM ─── -->
+<section id="team">
+  <div class="wrap">
+    <div class="fade">
+      <h2 class="h2">Co-Founders</h2>
+    </div>
+
+    <div class="team-grid">
+
+      <!-- CEO — Dongsoo Lee -->
+      <div class="card team-card fade d1">
+        <img src="dongsoo-new.png" class="tc-photo" alt="Dongsoo Lee" style="aspect-ratio:242/310"/>
+        <div class="tc-body">
+          <div class="tc-head">
+            <div class="tc-role">Chief Executive Officer</div>
+            <div class="tc-name">Dongsoo Lee<span class="tc-name-divider">|</span>이동수</div>
+          </div>
+          <ul class="tc-list">
+            <li class="current"><span class="co">National AI Strategy Committee Member | 국가인공지능전략위원회 위원</span></li>
+            <hr class="tc-divider"/>
+            <li><span class="co">Ph.D. @ Purdue University</span><span class="sep">·</span><span class="ttl">Memory Design, VLSI Testing, Emerging Memory</span></li>
+            <li><span class="co">Research Staff Member @ IBM TJ Watson Research</span><span class="sep">·</span><span class="ttl">Power9/10 CPU, NPU Design, FP8 Training</span></li>
+            <li><span class="co">Principal Engineer @ Samsung Research</span><span class="sep">·</span><span class="ttl">AI Model Compression Lead</span></li>
+            <li><span class="co">EVP @ NAVER Cloud</span><span class="sep">·</span><span class="ttl">AI Computing Strategy and Efficient Serving Systems</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- CRO — Minsoo Rhu -->
+      <div class="card team-card fade d2">
+        <img src="minsoo-new.png" class="tc-photo" alt="Minsoo Rhu"/>
+        <div class="tc-body">
+          <div class="tc-head">
+            <div class="tc-role">Chief Research Officer</div>
+            <div class="tc-name">Minsoo Rhu<span class="tc-name-divider">|</span>유민수</div>
+          </div>
+          <ul class="tc-list">
+            <li class="current"><span class="co">Endowed Chair Professor @ KAIST</span><span class="sep">·</span><span class="ttl">AI Computing System / GPU &amp; NPU HW/SW Design</span></li>
+            <li class="current"><span class="co">National AI Strategy Committee Member | 국가인공지능전략위원회 위원</span></li>
+            <hr class="tc-divider"/>
+            <li><span class="co">Ph.D. @ University of Texas, Austin</span><span class="sep">·</span><span class="ttl">GPU Processor and Memory System Design</span></li>
+            <li><span class="co">Research Scientist @ Meta</span><span class="sep">·</span><span class="ttl">Hardware/Software Systems for Secure and Private AI</span></li>
+            <li><span class="co">Senior Research Scientist @ NVIDIA</span><span class="sep">·</span><span class="ttl">GPU Memory Virtualization / AI Accelerator Design</span></li>
+            <li><span class="co">Program Chair for MICRO 2025, MICRO/ISCA/HPCA Hall of Fame</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- CPO — Baeseong Park -->
+      <div class="card team-card fade d3">
+        <img src="baeseong-new.png" class="tc-photo" alt="Baeseong Park" style="background-color:#fff"/>
+        <div class="tc-body">
+          <div class="tc-head">
+            <div class="tc-role">Chief Product Officer</div>
+            <div class="tc-name">Baeseong Park<span class="tc-name-divider">|</span>박배성</div>
+          </div>
+          <hr class="tc-divider"/>
+          <ul class="tc-list">
+            <li><span class="co">Engineer @ Samsung Research</span><span class="sep">·</span><span class="ttl">Optimized Transformer Kernel</span></li>
+            <li><span class="co">Leader @ NAVER Cloud</span><span class="sep">·</span><span class="ttl">AI Serving System</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- CSO — Se Jung Kwon -->
+      <div class="card team-card fade d4">
+        <img src="sejung-new.png" class="tc-photo" alt="Se Jung Kwon" style="aspect-ratio:242/315"/>
+        <div class="tc-body">
+          <div class="tc-head">
+            <div class="tc-role">Chief Strategy Officer</div>
+            <div class="tc-name">Se Jung Kwon<span class="tc-name-divider">|</span>권세중</div>
+          </div>
+          <hr class="tc-divider"/>
+          <ul class="tc-list">
+            <li><span class="co">Ph.D. @ KAIST</span></li>
+            <li><span class="co">Staff Engineer @ Samsung Research</span><span class="sep">·</span><span class="ttl">Model Compression</span></li>
+            <li><span class="co">Leader @ NAVER Cloud</span><span class="sep">·</span><span class="ttl">AI-HW Partnership / Strategy</span></li>
+            <li><span class="co">Adjunct Professor @ KAIST</span><span class="sep">·</span><span class="ttl">NAVER-INTEL-KAIST AI Research Center</span></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<hr class="rule"/>
+
+
+<!-- ─── CAREERS ─── -->
+<section id="careers">
+  <div class="wrap">
+    <div class="fade">
+      <h2 class="h2">Build With Us</h2>
+      <div class="careers-intro-grid">
+        <p class="careers-intro">
+          We're not hiring for headcount — we're looking for people who want to take on the Agent-native challenge from the ground up. 
+          <br> Here's the expertise we need:
+        </p>
+        <p class="careers-intro">
+          a2sys는 단순히 인력을 채우기 위해 채용하지 않습니다. AI 시스템을 처음부터 다시 설계하는 Agent-native한 도전을 함께할 사람을 찾고 있습니다. 
+          <br> 이를 위해 필요한 전문성은 다음과 같습니다:
+        </p>
+      </div>
+    </div>
+
+    <div class="expertise-wrap fade">
+      <table class="expertise-table">
+        <thead>
+          <tr>
+            <th class="col-area">Area</th>
+            <th class="col-desc">Your Background</th>
+            <th class="col-skills">Your Stack</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          
+          <tr>
+            <td class="col-area"><span class="tbl-area">Agent Product<br>& Evaluation</span></td>
+            <td class="col-desc"><p class="tbl-desc">You've shipped products that make complex systems feel simple. You care about how people actually interact with AI — and you know that a model is only as useful as the interface around it.</p></td>
+            <td class="col-skills">
+              <div class="tags">
+                <span class="tag">Next.js</span>
+                <span class="tag">React</span>
+                <span class="tag">Python</span>
+                <span class="tag">Node.js</span>
+                <span class="tag">Prompt Engineering</span>
+                <span class="tag">Data Visualization</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="col-area"><span class="tbl-area">Agent<br>Framework</span></td>
+            <td class="col-desc"><p class="tbl-desc">You've built backend systems that glue things together — APIs, integrations, pipelines. You understand how LLM-based tool-calling works and have opinions on how it should be done reliably at scale.</p></td>
+            <td class="col-skills">
+              <div class="tags">
+                <span class="tag">Python</span>
+                <span class="tag">FastAPI</span>
+                <span class="tag">OpenAI API</span>
+                <span class="tag">LangChain</span>
+                <span class="tag">MCP</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="col-area"><span class="tbl-area">Agent<br>Optimization</span></td>
+            <td class="col-desc"><p class="tbl-desc">You've trained models, not just used them. You've thought hard about what it means to align a model's behavior to a specific task — and you're curious whether RL can make agents actually reliable.</p></td>
+            <td class="col-skills">
+              <div class="tags">
+                <span class="tag">PyTorch</span>
+                <span class="tag">SFT</span>
+                <span class="tag">RL</span>
+                <span class="tag">LLM Architecture</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="col-area"><span class="tbl-area">ML Inference</span></td>
+            <td class="col-desc"><p class="tbl-desc">You know what happens inside an inference engine — latency, throughput, memory pressure. You've tuned serving stacks under real traffic and felt the pain of GPU underutilization firsthand.</p></td>
+            <td class="col-skills">
+              <div class="tags">
+                <span class="tag">Python</span>
+                <span class="tag">C++</span>
+                <span class="tag">vLLM</span>
+                <span class="tag">TensorRT-LLM</span>
+                <span class="tag">Kubernetes</span>
+                <span class="tag">Docker</span>
+                <span class="tag">GPU</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="careers-cta fade d2">
+      <p>Don't see your role? We'd still love to hear from you.</p>
+      <div class="careers-cta-btns">
+        <a href="https://epd82w3w.ninehire.site/job_posting/ZQi2GUhV" target="_blank" rel="noopener" class="btn btn-solid">
+          Apply Now
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="mailto:hiring@a2sys.ai" class="btn btn-ghost">
+          hiring@a2sys.ai
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<hr class="rule"/>
+
+
+<!-- ─── CONTACT ─── -->
+<section id="contact">
+  <div class="wrap">
+    <div class="fade">
+      <h2 class="h2">Contact</h2>
+    </div>
+
+    <div class="contact-list fade d1">
+      <div class="contact-row">
+        <span class="contact-row-label">Business &amp; Partnerships</span>
+        <a href="mailto:biz@a2sys.ai" class="contact-row-email">biz@a2sys.ai</a>
+      </div>
+      <div class="contact-row">
+        <span class="contact-row-label">Hiring &amp; Recruiting</span>
+        <a href="mailto:hiring@a2sys.ai" class="contact-row-email">hiring@a2sys.ai</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <svg viewBox="0 0 145.1 60.49" height="26" xmlns="http://www.w3.org/2000/svg" aria-label="a2sys" style="opacity:.55;flex-shrink:0">
+      <path fill="#fff" d="M122.43,21.45v2.59c0,1.12.85,2.03,1.9,2.03h12.8c.8,0,1.56.16,2.27.45,3.29,1.15,5.66,4.46,5.66,8.36v2.84c0,4.86-3.68,9.01-8.22,9.01h-30.07l3.23-7.26h25.06c1.05,0,1.9-.87,1.9-1.99v-2.59c0-1.12-.85-2.03-1.9-2.03h-12.81c-.79,0-1.56-.16-2.26-.45-2.11-.74-3.83-2.36-4.81-4.46l7.01-15.54h22.91v7.01h-20.77c-1.05,0-1.9.91-1.9,2.03Z"/>
+      <polygon fill="#fff" points="120.22 12.41 98.56 60.48 90.29 60.48 96.53 46.62 90.8 33.86 84.63 19.37 81.55 12.41 89.43 12.41 100.67 37.42 111.94 12.41 120.22 12.41"/>
+      <path fill="#fff" d="M89.14,34.89v2.83c0,4.86-3.69,9.02-8.23,9.02h-22.56v-7.27h20.78c1.05,0,1.9-.87,1.9-1.99v-2.59c0-1.12-.85-2.03-1.9-2.03h-12.81c-.79,0-1.56-.16-2.26-.45-3.29-1.15-5.66-4.46-5.66-8.36v-2.84c0-4.86,3.68-8.8,8.22-8.8h14.98l3.1,7.01h-16.3c-1.05,0-1.9.91-1.9,2.03v2.59c0,1.12.85,2.03,1.9,2.03h12.81c.79,0,1.56.16,2.26.45,3.29,1.15,5.67,4.46,5.67,8.37Z"/>
+      <path fill="#0052ff" d="M29.89,15.94c-6.66-5.89-16.8-5.92-23.61-.26-8.13,6.76-8.37,19.12-.71,26.31,6.52,6.12,16.95,6.64,23.05-.32l.07,5.02h7.19l-.03-18.1c0-4.95-2.29-9.4-5.96-12.64ZM28.64,28.86c.12,5.67-3.89,10.18-9.18,10.87-5.47.72-10.46-2.67-11.77-8.07-1-4.09.39-8.16,3.53-10.8,3.17-2.66,7.72-3.29,11.53-1.4,3.58,1.78,5.82,5.3,5.9,9.4h0Z"/>
+      <path fill="#0052ff" d="M58.38,39.47v7.27h-20.78v-7.27s.01-.12.01-.12v-6.93s-.01-2.02-.01-2.02l.17-.16,2.43-2.22.88-.8.12-.1.63-.58.53-.48c3.61-3.28,7.64-6.96,7.68-11.84.01-.96-.17-1.88-.5-2.71-.39-1-.99-1.89-1.77-2.61-1.09-1.03-2.54-1.71-4.17-1.86-1.58-.14-3.08.14-4.37.77-.16.08-.31.16-.46.25-2.85,1.67-4.8,5.09-4.8,9.04,0,.2,0,.4.02.59-.44-.57-.9-1.11-1.39-1.62-.16-.18-.33-.35-.51-.51-.7-.69-1.45-1.31-2.3-1.89-.06-.04-.11-.08-.17-.12-.72-.54-1.48-1.02-2.27-1.45-.03-.02-.07-.04-.1-.05,0,0,.01-.05.03-.14.3-1.09,2.58-8.56,10.16-11.08.04,0,.08-.03.12-.04,1.52-.45,3.07-.71,4.63-.77.21-.02.42-.02.64-.02s.45,0,.67.01c.86.03,1.68.12,2.46.26.18.03.36.06.53.1.02,0,.04.01.05.01,1.06.24,2.07.57,3.03.99.28.12.56.25.83.4.15.07.3.15.45.23.03.02.05.03.08.05,3.36,1.85,5.89,4.82,6.94,8.34.04.11.07.22.09.33.04.14.08.28.11.42.06.26.11.53.16.79.09.6.14,1.21.14,1.83,0,1.27-.2,2.5-.58,3.67-.23.95-.56,1.89-.97,2.8-.05.11-.1.22-.16.33-.9,1.91-2.39,4.01-4.23,5.84-2.26,2.25-4.6,4.35-6.96,6.55l-7.03,6.52h19.94Z"/>
+    </svg>
+    <div class="footer-right">
+      <p class="footer-copy">© 2026 a2sys Co., Ltd. All rights reserved.</p>
+      <p class="footer-biz-inline">
+        <span class="fl">상호</span>주식회사 에이투시스 (a2sys Co., Ltd.)<span class="sep">·</span><span class="fl">대표이사</span>이동수<span class="sep">·</span><span class="fl">주소</span>경기도 성남시 분당구 판교역로 221 투썬월드빌딩 2층
+      </p>
+    </div>
+  </div>
+</footer>
+
+
+<!--
+  Naver Maps 연동:
+  1. https://console.ncloud.com → Maps → 클라이언트 ID 발급
+  2. 아래 주석 해제 후 YOUR_CLIENT_ID 교체
+  <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_CLIENT_ID" onload="initMap()"></script>
+-->
+
+<script>
+  // Nav scroll + progress
+  const nav = document.getElementById('nav');
+  const bar = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 30);
+    const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+    bar.style.width = pct + '%';
+  }, { passive: true });
+
+  // Scroll reveal
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+  document.querySelectorAll('.fade').forEach(el => io.observe(el));
+
+  // Mobile menu
+  function toggleMob() {
+    document.getElementById('mob-menu').classList.toggle('open');
+  }
+
+  // Naver Map init — called by Maps API onload
+  function initMap() {
+    if (typeof naver === 'undefined') return;
+    const el = document.getElementById('map');
+    el.innerHTML = ''; el.style.padding = '0'; el.style.background = 'none'; el.style.border = 'none';
+    const center = new naver.maps.LatLng(37.3964, 127.1099);
+    const map = new naver.maps.Map(el, { center, zoom: 16, mapDataControl: false, scaleControl: false });
+    new naver.maps.Marker({ position: center, map, title: 'a2sys 판교역로 221 투썬월드빌딩 2층' });
+  }
+</script>
+
+</body>
+</html>
