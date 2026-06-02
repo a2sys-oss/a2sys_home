@@ -372,9 +372,17 @@
     .tbl-area {
       font-size: 1rem; font-weight: 700;
       color: var(--text); letter-spacing: -0.01em;
+      display: block;
+    }
+    .tbl-area-sub {
+      display: block; font-size: 0.7rem; font-weight: 400;
+      color: var(--muted); margin-top: 3px; font-family: 'Courier New', monospace;
     }
     .tbl-desc {
       font-size: 0.8125rem; color: var(--muted); line-height: 1.72;
+    }
+    .tbl-desc-ko {
+      margin-top: 8px; opacity: 0.75;
     }
     .tags { display: flex; flex-wrap: wrap; gap: 5px; }
     .tag {
@@ -510,7 +518,7 @@
 <header id="nav">
   <div class="nav-inner">
     <a href="#hero" aria-label="a2sys 홈">
-      <svg viewBox="0 0 145.1 60.49" height="36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <svg viewBox="-2 -2 149.1 64.49" height="36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="overflow:visible">
         <path fill="#fff" d="M122.43,21.45v2.59c0,1.12.85,2.03,1.9,2.03h12.8c.8,0,1.56.16,2.27.45,3.29,1.15,5.66,4.46,5.66,8.36v2.84c0,4.86-3.68,9.01-8.22,9.01h-30.07l3.23-7.26h25.06c1.05,0,1.9-.87,1.9-1.99v-2.59c0-1.12-.85-2.03-1.9-2.03h-12.81c-.79,0-1.56-.16-2.26-.45-2.11-.74-3.83-2.36-4.81-4.46l7.01-15.54h22.91v7.01h-20.77c-1.05,0-1.9.91-1.9,2.03Z"/>
         <polygon fill="#fff" points="120.22 12.41 98.56 60.48 90.29 60.48 96.53 46.62 90.8 33.86 84.63 19.37 81.55 12.41 89.43 12.41 100.67 37.42 111.94 12.41 120.22 12.41"/>
         <path fill="#fff" d="M89.14,34.89v2.83c0,4.86-3.69,9.02-8.23,9.02h-22.56v-7.27h20.78c1.05,0,1.9-.87,1.9-1.99v-2.59c0-1.12-.85-2.03-1.9-2.03h-12.81c-.79,0-1.56-.16-2.26-.45-3.29-1.15-5.66-4.46-5.66-8.36v-2.84c0-4.86,3.68-8.8,8.22-8.8h14.98l3.1,7.01h-16.3c-1.05,0-1.9.91-1.9,2.03v2.59c0,1.12.85,2.03,1.9,2.03h12.81c.79,0,1.56.16,2.26.45,3.29,1.15,5.67,4.46,5.67,8.37Z"/>
@@ -689,55 +697,54 @@
           
           
           <tr>
-            <td class="col-area"><span class="tbl-area">Agent Product<br>& Evaluation</span></td>
-            <td class="col-desc"><p class="tbl-desc">You've shipped products that make complex systems feel simple. You care about how people actually interact with AI — and you know that a model is only as useful as the interface around it.</p></td>
-            <td class="col-skills">
-              <div class="tags">
-                <span class="tag">Next.js</span>
-                <span class="tag">React</span>
-                <span class="tag">Python</span>
-                <span class="tag">Prompt Engineering</span>
-                <span class="tag">Data Visualization</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td class="col-area"><span class="tbl-area">Agent<br>Framework</span></td>
-            <td class="col-desc"><p class="tbl-desc">You've built backend systems that glue things together — APIs, integrations, pipelines. You understand how LLM-based tool-calling works and have opinions on how it should be done reliably at scale.</p></td>
+            <td class="col-area"><span class="tbl-area">Agent<br>Engineering</span><span class="tbl-area-sub">에이전트 엔지니어링</span></td>
+            <td class="col-desc"><p class="tbl-desc">You own the Agent Studio and APIs. You implement, orchestrate, and evaluate agents iteratively — building the organization's agent capabilities while feeding workload data to other cores. You have strong opinions on how to run LLM-based tool-calling reliably at scale.</p><p class="tbl-desc tbl-desc-ko">Agent Studio와 API를 관장합니다. 에이전트의 직접 구현·오케스트레이션·평가를 반복 수행하여 조직의 에이전트 역량을 누적하고, 그 과정에서 생성된 워크로드 데이터를 타 Core에 공급합니다. LLM 기반 tool-calling 구조를 신뢰할 수 있는 규모로 운용하는 방법에 대한 강한 의견이 있습니다.</p></td>
             <td class="col-skills">
               <div class="tags">
                 <span class="tag">Python</span>
                 <span class="tag">FastAPI</span>
-                <span class="tag">OpenAI API</span>
+                <span class="tag">LLM APIs</span>
                 <span class="tag">LangChain</span>
                 <span class="tag">MCP</span>
+                <span class="tag">Prompt Engineering</span>
               </div>
             </td>
           </tr>
           <tr>
-            <td class="col-area"><span class="tbl-area">Agent<br>Optimization</span></td>
-            <td class="col-desc"><p class="tbl-desc">You've trained models, not just used them. You've thought hard about what it means to align a model's behavior to a specific task — and you're curious whether RL can make agents actually reliable.</p></td>
+            <td class="col-area"><span class="tbl-area">Model<br>Engineering</span><span class="tbl-area-sub">모델 엔지니어링</span></td>
+            <td class="col-desc"><p class="tbl-desc">You oversee the company's research direction. You drive model architecture research, design KV-shareable model families, and build evaluation frameworks to ensure quality and reproducibility of model assets. You coordinate research priorities across engineering cores.</p><p class="tbl-desc tbl-desc-ko">회사 전반의 연구 흐름을 총괄합니다. 모델 아키텍처 연구·개조, KV 공유 가능한 모델 패밀리 설계, 평가 체계 구축으로 모델 자산의 품질·재현성을 책임집니다. 전사 Engineering Core의 연구 우선순위를 조율합니다.</p></td>
             <td class="col-skills">
               <div class="tags">
                 <span class="tag">PyTorch</span>
                 <span class="tag">SFT</span>
                 <span class="tag">RL</span>
                 <span class="tag">LLM Architecture</span>
+                <span class="tag">Evals</span>
               </div>
             </td>
           </tr>
           <tr>
-            <td class="col-area"><span class="tbl-area">ML Inference</span></td>
-            <td class="col-desc"><p class="tbl-desc">You know what happens inside an inference engine — latency, throughput, memory pressure. You've tuned serving stacks under real traffic and felt the pain of GPU underutilization firsthand.</p></td>
+            <td class="col-area"><span class="tbl-area">System<br>Engineering</span><span class="tbl-area-sub">시스템 엔지니어링</span></td>
+            <td class="col-desc"><p class="tbl-desc">You own the active KV optimization infrastructure. You build and operate training and serving infrastructure with KV-compatible, pooling-based inference stacks — converting model assets into real cost and latency advantages.</p><p class="tbl-desc tbl-desc-ko">능동형 KV 최적화 인프라를 관장합니다. 학습·서빙 인프라와 KV 호환·풀링 기반 inference stack을 구축·운영하여 모델 자산을 실속 가능한 cost·latency 우위로 전환합니다.</p></td>
             <td class="col-skills">
               <div class="tags">
                 <span class="tag">Python</span>
-                <span class="tag">C++</span>
-                <span class="tag">vLLM</span>
-                <span class="tag">TensorRT-LLM</span>
+                <span class="tag">LLM Inference</span>
+                <span class="tag">CUDA</span>
                 <span class="tag">Kubernetes</span>
                 <span class="tag">Docker</span>
-                <span class="tag">GPU</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="col-area"><span class="tbl-area">Hardware<br>Engineering</span><span class="tbl-area-sub">하드웨어 엔지니어링</span></td>
+            <td class="col-desc"><p class="tbl-desc">You lead the next-generation memory stack. You drive co-design collaborations with memory vendors to propose and build memory hierarchy structures optimized for agentic workloads.</p><p class="tbl-desc tbl-desc-ko">차세대 메모리 스택을 주도합니다. 메모리 회사와의 co-design 협업을 주관하여 에이전트 워크로드에 최적화된 메모리 계층 구조를 선도·제안합니다.</p></td>
+            <td class="col-skills">
+              <div class="tags">
+                <span class="tag">C++</span>
+                <span class="tag">GPU Architecture</span>
+                <span class="tag">Memory Systems</span>
+                <span class="tag">Co-design</span>
               </div>
             </td>
           </tr>
