@@ -358,17 +358,16 @@
       padding: 16px 24px;
     }
     .expertise-table td {
-      padding: 20px 24px;
-      vertical-align: middle;
+      padding: 24px;
+      vertical-align: top;
       border-bottom: 1px solid var(--border);
     }
     .expertise-table tbody tr:last-child td { border-bottom: none; }
     .expertise-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
     .expertise-table .col-area {
-      width: 18%; white-space: nowrap;
+      width: 22%; white-space: nowrap;
     }
-    .expertise-table .col-desc { width: 50%; }
-    .expertise-table .col-skills { width: 32%; }
+    .expertise-table .col-desc { width: 78%; }
     .tbl-area {
       font-size: 1rem; font-weight: 700;
       color: var(--text); letter-spacing: -0.01em;
@@ -379,19 +378,13 @@
       color: var(--muted); margin-top: 3px; font-family: 'Courier New', monospace;
     }
     .tbl-desc {
-      font-size: 0.8125rem; color: var(--muted); line-height: 1.72;
+      font-size: 0.875rem; color: var(--muted); line-height: 1.78;
     }
-    .tbl-desc-ko {
-      margin-top: 8px; opacity: 0.75;
-    }
-    .tags { display: flex; flex-wrap: wrap; gap: 5px; }
-    .tag {
-      font-size: 0.8rem; font-weight: 600;
-      font-family: 'Courier New', monospace;
-      color: rgba(100,160,255,0.78);
-      background: rgba(0,82,255,0.08); border: 1px solid rgba(0,82,255,0.14);
-      padding: 3px 9px; border-radius: 4px;
-    }
+    .tbl-desc + .tbl-desc { margin-top: 9px; }
+    .tbl-desc-ko { opacity: 0.75; }
+    .tbl-desc:not(.tbl-desc-ko) + .tbl-desc-ko { margin-top: 16px; }
+    .tbl-desc strong { color: var(--text); font-weight: 600; }
+    .careers-cta p { text-align: center; line-height: 1.7; }
     .careers-cta {
       display: flex; align-items: center; justify-content: center;
       gap: 18px; flex-wrap: wrap; margin-top: 44px;
@@ -484,6 +477,21 @@
     @media (max-width: 860px) {
       .jobs-grid { grid-template-columns: 1fr; }
       .loc-grid  { grid-template-columns: 1fr; }
+    }
+
+    /* 좁은 화면: 표를 카드 형태로 쌓기 */
+    @media (max-width: 760px) {
+      .expertise-table, .expertise-table tbody, .expertise-table tr, .expertise-table td {
+        display: block; width: auto;
+      }
+      .expertise-table thead { display: none; }
+      .expertise-table tr { border-bottom: 1px solid var(--border); padding: 24px 20px; }
+      .expertise-table tbody tr:last-child { border-bottom: none; }
+      .expertise-table td { padding: 0; border-bottom: none; }
+      .expertise-table .col-area { width: auto; white-space: normal; margin-bottom: 14px; }
+      .expertise-table .col-desc { width: auto; }
+      .tbl-area { font-size: 1.0625rem; }
+      .tbl-desc { font-size: 0.875rem; }
     }
     @media (max-width: 560px) {
       .team-card { flex-direction: column; gap: 18px; }
@@ -674,12 +682,12 @@
       <h2 class="h2">Build With Us</h2>
       <div class="careers-intro-grid">
         <p class="careers-intro">
-          We're not hiring for headcount — we're looking for people who want to take on the Agent-native challenge from the ground up. 
-          <br> Here's the expertise we need:
+          We're not hiring for headcount — we're looking for people who want to take on the Agent-native challenge from the ground up.
+          <br> These are the roles we're opening now:
         </p>
         <p class="careers-intro">
-          a2sys는 단순히 인력을 채우기 위해 채용하지 않습니다. AI 시스템을 처음부터 다시 설계하는 Agent-native한 도전을 함께할 사람을 찾고 있습니다. 
-          <br> 이를 위해 필요한 전문성은 다음과 같습니다:
+          a2sys는 빈자리를 채우려고 채용하지 않습니다. AI 시스템을 밑바닥부터 다시 설계하는 일에 함께 도전할 인재를 찾고 있습니다.
+          <br> 다음은 현재 채용 중인 포지션입니다.
         </p>
       </div>
     </div>
@@ -688,64 +696,45 @@
       <table class="expertise-table">
         <thead>
           <tr>
-            <th class="col-area">Area</th>
-            <th class="col-desc">Your Background</th>
-            <th class="col-skills">Your Stack</th>
+            <th class="col-area">Role</th>
+            <th class="col-desc">What You'll Own</th>
           </tr>
         </thead>
         <tbody>
-          
-          
           <tr>
-            <td class="col-area"><span class="tbl-area">Agent<br>Engineering</span><span class="tbl-area-sub">에이전트 엔지니어링</span></td>
-            <td class="col-desc"><p class="tbl-desc">You own the Agent Studio and APIs. You implement, orchestrate, and evaluate agents iteratively — building the organization's agent capabilities while feeding workload data to other cores. You have strong opinions on how to run LLM-based tool-calling reliably at scale.</p><p class="tbl-desc tbl-desc-ko">Agent Studio와 API를 관장합니다. 에이전트의 직접 구현·오케스트레이션·평가를 반복 수행하여 조직의 에이전트 역량을 누적하고, 그 과정에서 생성된 워크로드 데이터를 타 Core에 공급합니다. LLM 기반 tool-calling 구조를 신뢰할 수 있는 규모로 운용하는 방법에 대한 강한 의견이 있습니다.</p></td>
-            <td class="col-skills">
-              <div class="tags">
-                <span class="tag">Python</span>
-                <span class="tag">FastAPI</span>
-                <span class="tag">LLM APIs</span>
-                <span class="tag">LangChain</span>
-                <span class="tag">MCP</span>
-                <span class="tag">Prompt Engineering</span>
-              </div>
+            <td class="col-area"><span class="tbl-area">Agent Platform<br>Engineer</span><span class="tbl-area-sub">에이전트 플랫폼 엔지니어</span></td>
+            <td class="col-desc">
+              <p class="tbl-desc">You build the backend and runtime of the platform that defines and executes agents. In an agent product, the reliability of execution shapes quality as much as model performance does. You own the stability of the execution layer and the traceability of every run.</p>
+              <p class="tbl-desc">Agents behave differently on the same input, and the ways they fail are hard to predict. You design how execution state, memory, tool calls, and model calls are recorded, so that anyone can retrace what went wrong and where.</p>
+              <p class="tbl-desc tbl-desc-ko">에이전트를 정의하고 실행하는 플랫폼의 백엔드와 런타임을 만드는 역할입니다. 에이전트 제품에서는 모델 성능만큼 실행의 신뢰성이 품질을 좌우합니다. 실행 계층의 안정성과 실행 추적을 책임집니다.</p>
+              <p class="tbl-desc tbl-desc-ko">에이전트는 같은 입력에도 다르게 움직이고 실패하는 방식도 예측하기 어렵습니다. 실행 상태와 메모리, 도구 호출과 모델 호출의 기록을 설계해 무엇이 어디서 잘못됐는지 되짚을 수 있게 만듭니다.</p>
             </td>
           </tr>
           <tr>
-            <td class="col-area"><span class="tbl-area">Model<br>Engineering</span><span class="tbl-area-sub">모델 엔지니어링</span></td>
-            <td class="col-desc"><p class="tbl-desc">You oversee the company's research direction. You drive model architecture research, design KV-shareable model families, and build evaluation frameworks to ensure quality and reproducibility of model assets. You coordinate research priorities across engineering cores.</p><p class="tbl-desc tbl-desc-ko">회사 전반의 연구 흐름을 총괄합니다. 모델 아키텍처 연구·개조, KV 공유 가능한 모델 패밀리 설계, 평가 체계 구축으로 모델 자산의 품질·재현성을 책임집니다. 전사 Engineering Core의 연구 우선순위를 조율합니다.</p></td>
-            <td class="col-skills">
-              <div class="tags">
-                <span class="tag">PyTorch</span>
-                <span class="tag">SFT</span>
-                <span class="tag">RL</span>
-                <span class="tag">LLM Architecture</span>
-                <span class="tag">Evals</span>
-              </div>
+            <td class="col-area"><span class="tbl-area">LLM Modeling<br>Engineer</span><span class="tbl-area-sub">모델링 엔지니어</span></td>
+            <td class="col-desc">
+              <p class="tbl-desc">You sharpen a model's intelligence to meet product requirements and own the full model lifecycle, so it runs at a cost and speed we can actually serve. The biggest model is not always the answer. We aim for small, sharp, specialized models that clear the quality bar on as little GPU as possible.</p>
+              <p class="tbl-desc">Depending on your strengths and experience, you take the lead on one of two tracks — <strong>Agent Fine-tuning</strong> or <strong>Model Compression &amp; Optimization</strong> — working closely with our infrastructure and inference engineers.</p>
+              <p class="tbl-desc tbl-desc-ko">모델의 지능을 제품 요구사항에 맞게 고도화하고, 서비스 가능한 비용과 속도로 실행될 수 있도록 모델 라이프사이클 전반을 책임지는 역할입니다. 가장 거대한 모델이 항상 정답은 아닙니다. 우리 팀은 요구되는 품질을 달성하면서도 GPU 자원을 최소화할 수 있는 '똑똑하고 가벼운 특화 모델'을 지향합니다.</p>
+              <p class="tbl-desc tbl-desc-ko">본 포지션은 지원자의 강점과 경험에 따라 <strong>[에이전트 파인튜닝]</strong> 또는 <strong>[모델 경량화 및 최적화]</strong> 중 하나의 핵심 역할을 수행하며, 인프라 및 추론 엔지니어와 긴밀하게 협업합니다.</p>
             </td>
           </tr>
           <tr>
-            <td class="col-area"><span class="tbl-area">System<br>Engineering</span><span class="tbl-area-sub">시스템 엔지니어링</span></td>
-            <td class="col-desc"><p class="tbl-desc">You own the active KV optimization infrastructure. You build and operate training and serving infrastructure with KV-compatible, pooling-based inference stacks — converting model assets into real cost and latency advantages.</p><p class="tbl-desc tbl-desc-ko">능동형 KV 최적화 인프라를 관장합니다. 학습·서빙 인프라와 KV 호환·풀링 기반 inference stack을 구축·운영하여 모델 자산을 실속 가능한 cost·latency 우위로 전환합니다.</p></td>
-            <td class="col-skills">
-              <div class="tags">
-                <span class="tag">Python</span>
-                <span class="tag">LLM Inference</span>
-                <span class="tag">CUDA</span>
-                <span class="tag">Kubernetes</span>
-                <span class="tag">Docker</span>
-              </div>
+            <td class="col-area"><span class="tbl-area">LLM Inference<br>Engineer</span><span class="tbl-area-sub">추론 엔지니어</span></td>
+            <td class="col-desc">
+              <p class="tbl-desc">You run and optimize the serving stack yourself, built on inference engines such as vLLM, SGLang, and TensorRT-LLM. In an environment where inference performance and GPU utilization are the company's cost competitiveness, you own the serving layer's throughput, latency, and cost per token.</p>
+              <p class="tbl-desc">It does not stop at tuning engine settings. You trace the execution path down to the source to find bottlenecks, and turn what you measure into serving configurations and GPU capacity plans.</p>
+              <p class="tbl-desc tbl-desc-ko">vLLM, SGLang, TensorRT-LLM 등 추론 엔진 기반의 서빙 스택을 직접 운영하고 최적화하는 역할입니다. 추론 성능과 GPU 활용률이 곧 회사의 원가 경쟁력이 되는 환경에서, 서빙 레이어의 처리량과 지연시간, 토큰당 비용을 책임집니다.</p>
+              <p class="tbl-desc tbl-desc-ko">엔진 설정 튜닝에서 끝나지 않습니다. 실행 경로를 소스 수준까지 분석해 병목을 찾고, 측정 결과를 서빙 구성과 GPU 용량 계획으로 연결합니다.</p>
             </td>
           </tr>
           <tr>
-            <td class="col-area"><span class="tbl-area">Hardware<br>Engineering</span><span class="tbl-area-sub">하드웨어 엔지니어링</span></td>
-            <td class="col-desc"><p class="tbl-desc">You lead the next-generation memory stack. You drive co-design collaborations with memory vendors to propose and build memory hierarchy structures optimized for agentic workloads.</p><p class="tbl-desc tbl-desc-ko">차세대 메모리 스택을 주도합니다. 메모리 회사와의 co-design 협업을 주관하여 에이전트 워크로드에 최적화된 메모리 계층 구조를 선도·제안합니다.</p></td>
-            <td class="col-skills">
-              <div class="tags">
-                <span class="tag">C++</span>
-                <span class="tag">GPU Architecture</span>
-                <span class="tag">Memory Systems</span>
-                <span class="tag">Co-design</span>
-              </div>
+            <td class="col-area"><span class="tbl-area">AI Infrastructure<br>Engineer</span><span class="tbl-area-sub">AI 인프라 엔지니어</span></td>
+            <td class="col-desc">
+              <p class="tbl-desc">You keep AI services running without interruption on Kubernetes and GPU clusters. GPUs are the most expensive asset the company owns, and when the service stops, the product stops with it. You own the reliability and resource efficiency of our infrastructure.</p>
+              <p class="tbl-desc">Clusters and nodes, deployment automation, networking and security, observability — all of it is yours. Tuning inference engine performance belongs to the LLM Inference Engineer; this role builds the ground underneath, so every other engineer can put their workload on it safely.</p>
+              <p class="tbl-desc tbl-desc-ko">Kubernetes와 GPU 클러스터 위에서 AI 서비스가 끊기지 않고 돌아가게 만드는 역할입니다. GPU는 회사에서 가장 비싼 자산이고, 서비스가 멈추면 제품도 멈춥니다. 인프라의 안정성과 자원 효율을 책임집니다.</p>
+              <p class="tbl-desc tbl-desc-ko">클러스터와 노드, 배포 자동화, 네트워크와 보안, 관측 체계를 소유합니다. 추론 엔진의 성능 튜닝은 LLM Inference Engineer가 맡고, 이 역할은 그 위에서 다른 엔지니어가 자기 워크로드를 안전하게 올릴 수 있는 기반을 만듭니다.</p>
             </td>
           </tr>
         </tbody>
@@ -753,7 +742,8 @@
     </div>
 
     <div class="careers-cta fade d2">
-      <p>Don't see your role? We'd still love to hear from you.</p>
+      <p>Full job descriptions on our careers page. Don't see your role? We'd still love to hear from you.<br>
+        <span style="opacity:0.75">자세한 업무 내용과 자격 요건은 채용 페이지에서 확인하실 수 있습니다.</span></p>
       <div class="careers-cta-btns">
         <a href="https://epd82w3w.ninehire.site/job_posting/ZQi2GUhV" target="_blank" rel="noopener" class="btn btn-solid">
           Apply Now
